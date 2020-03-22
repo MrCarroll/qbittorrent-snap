@@ -1,0 +1,64 @@
+name: qbittorrent-james-carroll
+base: core18
+version: '4.2.1'
+summary: An opensource crossplatform torrent client
+description: |
+  qBittorrent is a QT based torrent client using libtorrent-rasterbar. 
+  It supports multiple operating systems and has a wide spectrum of supported torrent functionality.
+  The project is translated into over 70 languages, has a web GUI tool, supports torrent creation, 
+  has IPV6 support, UPNP support, and has absolutely zero ads!
+
+  Ensure the network-control plug is enabled or the torrent downloads will never begin!
+grade: stable
+confinement: strict
+license: GPL-2.0
+
+parts:
+  qbittorrent:
+    plugin: autotools
+    source: https://github.com/qbittorrent/qBittorrent.git
+    source-tag: release-4.2.1
+    build-packages:
+      - qtbase5-dev
+      - qttools5-dev-tools
+      - libqt5svg5-dev
+      - zlib1g-dev
+      - libssl-dev
+    install-via: prefix
+    stage-packages: 
+      - libqt5core5a
+      - libqt5dbus5
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5network5
+      - libqt5xml5
+      - zlib1g
+      - geoip-database
+      - libglu1-mesa
+      - python
+    after: [libtorrent-rasterbar]
+
+  libtorrent-rasterbar:
+    plugin: cmake
+    source: https://github.com/arvidn/libtorrent.git
+    source-branch: RC_1_2
+    build-snaps:
+      - cmake
+    build-packages:
+      - ninja-build
+      - libboost-all-dev
+    stage-packages:
+      - libboost-system1.65.1
+
+  
+apps:
+  qbittorrent:
+    command: bin/qbittorrent
+    plugs: 
+      - home
+      - network
+      - network-bind
+      - network-control
+      - mount-observe
+      - audio-playback
+    extensions: [kde-neon]
